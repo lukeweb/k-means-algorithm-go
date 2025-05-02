@@ -42,6 +42,42 @@ var meanTestsCases = []struct {
 	{"5D: arithmetic", []Point{{2, 4, 6, 8, 10}, {4, 6, 8, 10, 12}, {6, 8, 10, 12, 14}}, Point{4, 6, 8, 10, 12}},
 }
 
+var minTestCases = []struct {
+	name     string
+	points   []Point
+	expected Point
+}{
+	{"2D: min left corner", []Point{{0, 0}, {2, 2}}, Point{0, 0}},
+	{"2D: various", []Point{{1, 2}, {3, 1}, {5, 6}}, Point{1, 1}},
+	{"2D: negatives", []Point{{-1, -3}, {1, -2}}, Point{-1, -3}},
+
+	{"3D: origin min", []Point{{0, 0, 0}, {6, 6, 6}}, Point{0, 0, 0}},
+	{"3D: scattered", []Point{{4, 5, 6}, {1, 2, 3}, {7, 8, 9}}, Point{1, 2, 3}},
+	{"3D: negatives", []Point{{-2, -5, -1}, {-1, -2, -3}}, Point{-2, -5, -3}},
+
+	{"5D: mirrored", []Point{{1, 2, 3, 4, 5}, {5, 4, 3, 2, 1}}, Point{1, 2, 3, 2, 1}},
+	{"5D: zeros and tens", []Point{{0, 0, 0, 0, 0}, {10, 10, 10, 10, 10}}, Point{0, 0, 0, 0, 0}},
+	{"5D: mixed", []Point{{4, 6, 8, 10, 12}, {2, 4, 6, 8, 10}, {6, 8, 10, 12, 14}}, Point{2, 4, 6, 8, 10}},
+}
+
+var maxTestCases = []struct {
+	name     string
+	points   []Point
+	expected Point
+}{
+	{"2D: max right corner", []Point{{0, 0}, {2, 2}}, Point{2, 2}},
+	{"2D: various", []Point{{1, 2}, {3, 1}, {5, 6}}, Point{5, 6}},
+	{"2D: negatives", []Point{{-1, -3}, {-2, -2}}, Point{-1, -2}},
+
+	{"3D: origin max", []Point{{0, 0, 0}, {6, 6, 6}}, Point{6, 6, 6}},
+	{"3D: scattered", []Point{{4, 5, 6}, {1, 2, 3}, {7, 8, 9}}, Point{7, 8, 9}},
+	{"3D: negatives", []Point{{-2, -5, -1}, {-1, -2, -3}}, Point{-1, -2, -1}},
+
+	{"5D: mirrored", []Point{{1, 2, 3, 4, 5}, {5, 4, 3, 2, 1}}, Point{5, 4, 3, 4, 5}},
+	{"5D: zeros and tens", []Point{{0, 0, 0, 0, 0}, {10, 10, 10, 10, 10}}, Point{10, 10, 10, 10, 10}},
+	{"5D: mixed", []Point{{4, 6, 8, 10, 12}, {2, 4, 6, 8, 10}, {6, 8, 10, 12, 14}}, Point{6, 8, 10, 12, 14}},
+}
+
 func TestDistanceCalculation(t *testing.T) {
 	for _, testCase := range distanceTestsCases {
 		t.Run(testCase.name, func(t *testing.T) {
@@ -60,6 +96,32 @@ func TestMeanCalculation(t *testing.T) {
 
 			for i := range testCase.expected {
 				assert.InDelta(t, testCase.expected[i], actual[i], 1e-9)
+			}
+		})
+	}
+}
+
+func TestFindMinPointsValue(t *testing.T) {
+	for _, testCase := range minTestCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			actual := findMin(testCase.points)
+			assert.Equal(t, len(testCase.expected), len(actual))
+
+			for i := range testCase.expected {
+				assert.InDelta(t, testCase.expected[i], actual[i], 1e-9, "Mismatch at dimension %d", i)
+			}
+		})
+	}
+}
+
+func TestFindMaxPointsValue(t *testing.T) {
+	for _, testCase := range maxTestCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			actual := findMax(testCase.points)
+			assert.Equal(t, len(testCase.expected), len(actual))
+
+			for i := range testCase.expected {
+				assert.InDelta(t, testCase.expected[i], actual[i], 1e-9, "Mismatch at dimension %d", i)
 			}
 		})
 	}
