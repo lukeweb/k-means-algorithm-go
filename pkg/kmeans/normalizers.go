@@ -9,17 +9,17 @@ package kmeans
 // This indicates all points have the same value in that dimension.
 func NormalizePoints(points []Point) []Point {
 	normalized := make([]Point, len(points)) // output slice of the same length
-	min := findMin(points)                   // minimum values per dimension
-	max := findMax(points)                   // maximum values per dimension
+	minValue := findMin(points)              // minimum values per dimension
+	maxValue := findMax(points)              // maximum values per dimension
 
 	for i, point := range points {
 		n := make(Point, len(point)) // new normalized point
 		for j, val := range point {
-			denominator := max[j] - min[j] // value range in dimension j
+			denominator := maxValue[j] - minValue[j] // value range in dimension j
 			if denominator == 0 {
 				n[j] = 0 // no variance – set to 0, i.e., start of the scale
 			} else {
-				n[j] = (val - min[j]) / denominator
+				n[j] = (val - minValue[j]) / denominator
 			}
 		}
 		normalized[i] = n

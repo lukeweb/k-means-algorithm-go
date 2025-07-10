@@ -9,7 +9,8 @@ import (
 // It randomly permutes the indices and picks the first k points.
 func RandomCentroids(points []Point, k int) []Point {
 	centroids := make([]Point, k)
-	perm := rand.Perm(len(points)) // Random permutation of indices
+	// #nosec G404 -- Random permutation of indices
+	perm := rand.Perm(len(points))
 
 	for i := 0; i < k; i++ {
 		centroids[i] = points[perm[i]] // Randomly chosen points
@@ -26,7 +27,7 @@ func SmartCentroids(points []Point, k int) []Point {
 	// Initialize centroids slice
 	centroids := make([]Point, 0, k)
 
-	// Step 1: Randomly pick the first centroid
+	// #nosec G404 -- Step 1: Randomly pick the first centroid
 	firstIndex := rand.Intn(nPoints)
 	centroids = append(centroids, points[firstIndex])
 
@@ -49,7 +50,7 @@ func SmartCentroids(points []Point, k int) []Point {
 			total += dSquared // total must be the sum of squared distances!
 		}
 
-		// Pick a new point with probability proportional to distance squared
+		// #nosec G404 -- Pick a new point with probability proportional to distance squared
 		randomPoint := rand.Float64() * total
 		cumulative := 0.0
 

@@ -40,33 +40,33 @@ func mean(points []Point) Point {
 // For 2D points: returns min separately for X and Y.
 // For n-dimensional points: returns min per axis.
 func findMin(points []Point) Point {
-	min := make(Point, len(points[0]))
-	copy(min, points[0]) // initialize with the first point
+	minValue := make(Point, len(points[0]))
+	copy(minValue, points[0]) // initialize with the first point
 
 	for _, point := range points[1:] {
 		for j, p := range point {
-			if min[j] > p {
-				min[j] = p
+			if minValue[j] > p {
+				minValue[j] = p
 			}
 		}
 	}
 
-	return min
+	return minValue
 }
 
 // findMax finds the maximum value for each coordinate (column) of the point set.
 // Works analogously to findMin but finds the highest values.
 func findMax(points []Point) Point {
-	max := make(Point, len(points[0]))
-	copy(max, points[0]) // initialize with the first point
+	maxValue := make(Point, len(points[0]))
+	copy(maxValue, points[0]) // initialize with the first point
 
 	for _, point := range points {
 		for j, p := range point {
-			if max[j] < p {
-				max[j] = p
+			if maxValue[j] < p {
+				maxValue[j] = p
 			}
 		}
 	}
 
-	return max
+	return maxValue
 }

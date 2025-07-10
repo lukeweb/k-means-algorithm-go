@@ -15,8 +15,8 @@ import "math"
 // Formula:
 //
 //	SSE = Σ ||x_i - c_{a_i}||^2
-func CalculateSSE(points []Point, centroids []Point, assignments []int) float64 {
-	var sse float64 = 0.0
+func CalculateSSE(points, centroids []Point, assignments []int) float64 {
+	sse := 0.0
 
 	// Iterate over all points
 	for i, point := range points {
@@ -43,6 +43,6 @@ func CalculateSSE(points []Point, centroids []Point, assignments []int) float64 
 //
 // Returns:
 //   - Mean Squared Error (float64)
-func CalculateMSE(points []Point, centroids []Point, assignments []int) float64 {
+func CalculateMSE(points, centroids []Point, assignments []int) float64 {
 	return CalculateSSE(points, centroids, assignments) / float64(len(points)) // Return Mean Squared Error
 }
