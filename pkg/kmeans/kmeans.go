@@ -34,7 +34,7 @@ func KMeans(points []Point, k, iterations int, initializeCentroids InitializeCen
 			closestIndex := -1
 
 			for index, centroid := range centroids {
-				distance := distance(point, centroid)
+				distance := distanceSquared(point, centroid)
 				if distance < minDist {
 					minDist = distance
 					closestIndex = index
@@ -71,21 +71,13 @@ func handleEmptyCentroid(
 	centroids []Point,
 	points []Point,
 ) {
-	if len(points) == 0 {
-		return
-	}
-
 	var (
 		furthestPointIdx int     = -1
 		maxDist          float64 = -1.0
 	)
 
 	for idx, point := range points {
-		d := distance(point, centroids[controlIdx])
-		if d == 0 {
-			continue
-		}
-
+		d := distanceSquared(point, centroids[controlIdx])
 		if d > maxDist {
 			maxDist = d
 			furthestPointIdx = idx

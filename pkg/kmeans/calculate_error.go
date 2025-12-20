@@ -18,9 +18,9 @@ func CalculateSSE(points, centroids []Point, assignments []int) float64 {
 
 	// Iterate over all points
 	for i, point := range points {
-		centroid := centroids[assignments[i]] // Get the assigned centroid
-		dist := distance(point, centroid)     // Euclidean distance between point and centroid
-		sse += dist * dist                    // Add the squared distance to the total error
+		centroid := centroids[assignments[i]]    // Get the assigned centroid
+		dist := distanceSquared(point, centroid) // Squared Euclidean distance between point and centroid
+		sse += dist                              // Add the squared distance to the total error
 	}
 
 	return sse

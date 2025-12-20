@@ -1,10 +1,16 @@
 package kmeans
 
-import "math"
-
-// distance calculates the Euclidean distance between two n-dimensional points p and q.
-// Formula: sqrt(Σ(p_i - q_i)^2 for i=1..n)
-func distance(p, q Point) float64 {
+// distanceSquared calculates the squared Euclidean distance between two n-dimensional points p and q.
+//
+// Formula: Σ (p_i - q_i)^2  for i = 1..n
+//
+// Parameters:
+// - p: the first n-dimensional point.
+// - q: the second n-dimensional point.
+//
+// Returns:
+// - the sum of squared differences between corresponding coordinates.
+func distanceSquared(p, q Point) float64 {
 	if len(p) != len(q) {
 		return 0
 	}
@@ -15,7 +21,7 @@ func distance(p, q Point) float64 {
 		sum += diff * diff
 	}
 
-	return math.Sqrt(sum)
+	return sum
 }
 
 // mean computes the centroid (average point) of a group of points.

@@ -40,14 +40,17 @@ func SmartCentroids(points []Point, k int) []Point {
 		for i, point := range points {
 			minDistance := math.MaxFloat64
 			for _, centroid := range centroids {
-				d := distance(point, centroid)
+				d := distanceSquared(point, centroid)
 				if d < minDistance {
 					minDistance = d
 				}
 			}
-			dSquared := minDistance * minDistance
-			distances[i] = dSquared
-			total += dSquared // total must be the sum of squared distances!
+			distances[i] = minDistance
+			total += minDistance // total must be the sum of distances!
+		}
+
+		if total == 0 {
+			break
 		}
 
 		// #nosec G404 -- Pick a new point with probability proportional to distance squared

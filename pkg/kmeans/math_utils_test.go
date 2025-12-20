@@ -11,16 +11,16 @@ var distanceTestsCases = []struct {
 	p, q     Point
 	expected float64
 }{
-	{"2D: basic", Point{0, 0}, Point{3, 4}, 5.0},
+	{"2D: basic", Point{0, 0}, Point{3, 4}, 25.0},
 	{"2D: same point", Point{1, 2}, Point{1, 2}, 0.0},
-	{"2D: negative", Point{-1, -1}, Point{1, 1}, 2.8284271247461903},
+	{"2D: negative", Point{-1, -1}, Point{1, 1}, 8.0},
 
-	{"3D: basic", Point{0, 0, 0}, Point{1, 2, 2}, 3.0},
-	{"3D: arbitrary", Point{1, 1, 1}, Point{4, 5, 6}, 7.0710678118654755},
+	{"3D: basic", Point{0, 0, 0}, Point{1, 2, 2}, 9.0},
+	{"3D: arbitrary", Point{1, 1, 1}, Point{4, 5, 6}, 50.0},
 	{"3D: same", Point{5, 5, 5}, Point{5, 5, 5}, 0.0},
 
-	{"5D: mirrored", Point{1, 2, 3, 4, 5}, Point{5, 4, 3, 2, 1}, 6.324555320336759},
-	{"5D: ones", Point{0, 0, 0, 0, 0}, Point{1, 1, 1, 1, 1}, 2.23606797749979},
+	{"5D: mirrored", Point{1, 2, 3, 4, 5}, Point{5, 4, 3, 2, 1}, 40.0},
+	{"5D: ones", Point{0, 0, 0, 0, 0}, Point{1, 1, 1, 1, 1}, 5.0},
 	{"5D: same", Point{1, 2, 3, 4, 5}, Point{1, 2, 3, 4, 5}, 0.0},
 }
 
@@ -81,7 +81,7 @@ var maxTestCases = []struct {
 func TestDistanceCalculation(t *testing.T) {
 	for _, testCase := range distanceTestsCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			actual := distance(testCase.p, testCase.q)
+			actual := distanceSquared(testCase.p, testCase.q)
 
 			assert.InDelta(t, testCase.expected, actual, 1e-9)
 		})
