@@ -45,7 +45,7 @@ func SmartCentroids(points []Point, k int) []Point {
 					minDistance = d
 				}
 			}
-			dSquared := math.Pow(minDistance, 2)
+			dSquared := minDistance * minDistance
 			distances[i] = dSquared
 			total += dSquared // total must be the sum of squared distances!
 		}

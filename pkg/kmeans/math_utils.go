@@ -5,11 +5,14 @@ import "math"
 // distance calculates the Euclidean distance between two n-dimensional points p and q.
 // Formula: sqrt(Σ(p_i - q_i)^2 for i=1..n)
 func distance(p, q Point) float64 {
-	var sum float64 = 0
+	if len(p) != len(q) {
+		return 0
+	}
 
+	var sum float64 = 0
 	for i := range p {
 		diff := p[i] - q[i]
-		sum += math.Pow(diff, 2)
+		sum += diff * diff
 	}
 
 	return math.Sqrt(sum)

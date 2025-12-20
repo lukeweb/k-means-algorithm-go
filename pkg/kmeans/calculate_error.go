@@ -1,7 +1,5 @@
 package kmeans
 
-import "math"
-
 // CalculateSSE calculates the total within-cluster sum of squared errors (SSE).
 //
 // Arguments:
@@ -22,7 +20,7 @@ func CalculateSSE(points, centroids []Point, assignments []int) float64 {
 	for i, point := range points {
 		centroid := centroids[assignments[i]] // Get the assigned centroid
 		dist := distance(point, centroid)     // Euclidean distance between point and centroid
-		sse += math.Pow(dist, 2)              // Add the squared distance to the total error
+		sse += dist * dist                    // Add the squared distance to the total error
 	}
 
 	return sse

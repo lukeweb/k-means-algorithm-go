@@ -48,9 +48,51 @@ func KMeans(points []Point, k, iterations int, initializeCentroids InitializeCen
 		for j := range centroids {
 			if len(clusters[j]) > 0 {
 				centroids[j] = mean(clusters[j])
+			} else {
+				handleEmptyCentroid(j, centroids, points)
 			}
 		}
 	}
 
 	return centroids, assignments
+}
+
+// handleEmptyCentroid reinitializes an empty cluster centroid.
+//
+// Parameters:
+// - centroidIdx: the index of the empty centroid to reinitialize.
+// - centroids: the slice of current centroid positions.
+// - points: the dataset used for clustering.
+//
+// The centroid is relocated to the data point farthest from it in order
+// to reduce clustering error and allow the algorithm to continue.
+func handleEmptyCentroid(
+	controlIdx int,
+	centroids []Point,
+	points []Point,
+) {
+	if len(points) == 0 {
+		return
+	}
+
+	var (
+		furthestPointIdx int     = -1
+		maxDist          float64 = -1.0
+	)
+
+	for idx, point := range points {
+		d := distance(point, centroids[controlIdx])
+		if d == 0 {
+			continue
+		}
+
+		if d > maxDist {
+			maxDist = d
+			furthestPointIdx = idx
+		}
+	}
+
+	if furthestPointIdx >= 0 {
+		copy(centroids[controlIdx], points[furthestPointIdx])
+	}
 }
