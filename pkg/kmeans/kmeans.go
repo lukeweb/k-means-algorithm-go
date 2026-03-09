@@ -30,16 +30,7 @@ func KMeans(points []Point, k, iterations int, initializeCentroids InitializeCen
 
 		// Assign each point to the nearest centroid
 		for i, point := range points {
-			minDist := math.MaxFloat64
-			closestIndex := -1
-
-			for index, centroid := range centroids {
-				distance := distanceSquared(point, centroid)
-				if distance < minDist {
-					minDist = distance
-					closestIndex = index
-				}
-			}
+			closestIndex := findClosestIndex(point, centroids)
 			clusters[closestIndex] = append(clusters[closestIndex], point)
 			assignments[i] = closestIndex
 		}
@@ -55,6 +46,33 @@ func KMeans(points []Point, k, iterations int, initializeCentroids InitializeCen
 	}
 
 	return centroids, assignments
+}
+
+// findClosestIndex returns the index of the centroid closest to the given point.
+//
+// Parameters:
+// - point: the n-dimensional data point to assign.
+// - centroids: a slice of current centroids.
+//
+// Returns:
+// - the index of the nearest centroid. Returns -1 if centroids slice is empty.
+func findClosestIndex(point Point, centroids []Point) int {
+	if len(centroids) == 0 {
+		return -1 // no centroids to compare
+	}
+
+	minDist := math.MaxFloat64
+	closestIndex := -1
+
+	for index, centroid := range centroids {
+		distance := distanceSquared(point, centroid)
+		if distance < minDist {
+			minDist = distance
+			closestIndex = index
+		}
+	}
+
+	return closestIndex
 }
 
 // handleEmptyCentroid reinitializes an empty cluster centroid.
