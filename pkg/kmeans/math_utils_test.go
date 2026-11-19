@@ -22,6 +22,13 @@ var distanceTestsCases = []struct {
 	{"5D: mirrored", Point{1, 2, 3, 4, 5}, Point{5, 4, 3, 2, 1}, 40.0},
 	{"5D: ones", Point{0, 0, 0, 0, 0}, Point{1, 1, 1, 1, 1}, 5.0},
 	{"5D: same", Point{1, 2, 3, 4, 5}, Point{1, 2, 3, 4, 5}, 0.0},
+
+	{"1D: basic", Point{1}, Point{4}, 9.0},
+	{"1D: same", Point{7}, Point{7}, 0.0},
+	{"fractional values", Point{0.5, 0.5}, Point{1.5, 2.5}, 5.0},
+	{"empty points", Point{}, Point{}, 0.0},
+	// Documents current behavior (REVIEW.md, H2): mismatched dimensions yield 0.
+	{"mismatched dimensions return 0", Point{1, 2}, Point{100}, 0.0},
 }
 
 var meanTestsCases = []struct {
@@ -40,6 +47,10 @@ var meanTestsCases = []struct {
 	{"5D: mirrored", []Point{{1, 2, 3, 4, 5}, {5, 4, 3, 2, 1}}, Point{3, 3, 3, 3, 3}},
 	{"5D: range", []Point{{0, 0, 0, 0, 0}, {10, 10, 10, 10, 10}}, Point{5, 5, 5, 5, 5}},
 	{"5D: arithmetic", []Point{{2, 4, 6, 8, 10}, {4, 6, 8, 10, 12}, {6, 8, 10, 12, 14}}, Point{4, 6, 8, 10, 12}},
+
+	{"single point", []Point{{3, 4}}, Point{3, 4}},
+	{"1D: avg", []Point{{1}, {2}, {6}}, Point{3}},
+	{"fractional and negative", []Point{{-1.5, 0.5}, {0.5, 1.5}}, Point{-0.5, 1}},
 }
 
 var minTestCases = []struct {
@@ -58,6 +69,10 @@ var minTestCases = []struct {
 	{"5D: mirrored", []Point{{1, 2, 3, 4, 5}, {5, 4, 3, 2, 1}}, Point{1, 2, 3, 2, 1}},
 	{"5D: zeros and tens", []Point{{0, 0, 0, 0, 0}, {10, 10, 10, 10, 10}}, Point{0, 0, 0, 0, 0}},
 	{"5D: mixed", []Point{{4, 6, 8, 10, 12}, {2, 4, 6, 8, 10}, {6, 8, 10, 12, 14}}, Point{2, 4, 6, 8, 10}},
+
+	{"single point", []Point{{3, 4}}, Point{3, 4}},
+	{"1D: min", []Point{{5}, {-2}, {9}}, Point{-2}},
+	{"fractional and negative", []Point{{-1.5, 0.5}, {0.5, -1.5}}, Point{-1.5, -1.5}},
 }
 
 var maxTestCases = []struct {
@@ -76,6 +91,10 @@ var maxTestCases = []struct {
 	{"5D: mirrored", []Point{{1, 2, 3, 4, 5}, {5, 4, 3, 2, 1}}, Point{5, 4, 3, 4, 5}},
 	{"5D: zeros and tens", []Point{{0, 0, 0, 0, 0}, {10, 10, 10, 10, 10}}, Point{10, 10, 10, 10, 10}},
 	{"5D: mixed", []Point{{4, 6, 8, 10, 12}, {2, 4, 6, 8, 10}, {6, 8, 10, 12, 14}}, Point{6, 8, 10, 12, 14}},
+
+	{"single point", []Point{{3, 4}}, Point{3, 4}},
+	{"1D: max", []Point{{5}, {-2}, {9}}, Point{9}},
+	{"fractional and negative", []Point{{-1.5, 0.5}, {0.5, -1.5}}, Point{0.5, 0.5}},
 }
 
 func TestDistanceCalculation(t *testing.T) {

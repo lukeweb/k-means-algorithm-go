@@ -4,8 +4,9 @@ import (
 	"math"
 	"testing"
 
-	"github.com/lukeweb/k-means-algorithm-go/pkg/kmeans"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/lukeweb/k-means-algorithm-go/pkg/kmeans"
 )
 
 type ValidatorSuite struct {
@@ -79,4 +80,37 @@ func (s *ValidatorSuite) TestInfValueReturnsError() {
 	points := []kmeans.Point{{1, 2}, {math.Inf(1), 4}}
 	err := kmeans.ValidatePoints(points, 2)
 	s.ErrorIs(err, kmeans.ErrInvalidNumericValue)
+}
+
+func (s *ValidatorSuite) TestKEqualToNumberOfPointsIsValid() {
+	points := []kmeans.Point{{1, 2}, {3, 4}, {5, 6}}
+	err := kmeans.ValidatePoints(points, 3)
+	s.NoError(err)
+}
+
+func (s *ValidatorSuite) TestSinglePointSingleClusterIsValid() {
+	err := kmeans.ValidatePoints([]kmeans.Point{{1, 2}}, 1)
+	s.NoError(err)
+}
+
+func (s *ValidatorSuite) TestNaNInFirstPointReturnsError() {
+	points := []kmeans.Point{{math.NaN(), 2}, {3, 4}}
+	err := kmeans.ValidatePoints(points, 2)
+	s.ErrorIs(err, kmeans.ErrInvalidNumericValue)
+}
+
+func (s *ValidatorSuite) TestNegativeInfValueReturnsError() {
+	points := []kmeans.Point{{1, 2}, {3, math.Inf(-1)}}
+	err := kmeans.ValidatePoints(points, 2)
+	s.ErrorIs(err, kmeans.ErrInvalidNumericValue)
+}
+
+func (s *ValidatorSuite) TestNoPointsTakesPrecedenceOverInvalidK() {
+	err := kmeans.ValidatePoints(nil, 0)
+	s.ErrorIs(err, kmeans.ErrNoPoints)
+}
+
+func (s *ValidatorSuite) TestInvalidKTakesPrecedenceOverNotEnoughPoints() {
+	err := kmeans.ValidatePoints([]kmeans.Point{{1, 2}}, -1)
+	s.ErrorIs(err, kmeans.ErrNegativeNumberOfClusters)
 }
