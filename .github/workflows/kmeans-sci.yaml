@@ -2,28 +2,43 @@ name: K-Means Algorithm in Go CI
 
 on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
+  lint:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - name: Verify dependencies
+        run: |
+          go mod verify
+          go mod tidy -diff
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.14.0
+          args: --timeout=5m
+
   tests:
     timeout-minutes: 15
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
-          go-version: 1.24.2
-      - name: Install dependencies
-        run: go mod tidy
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v4
-        with:
-          version: v1.64.8
-          only-new-issues: true
-          args: --timeout=5m
+          go-version-file: go.mod
       - name: Test
-        run: go test -v ./pkg/kmeans
+        run: go test -race -count=1 -coverprofile=coverage.out ./...
+      - name: Coverage summary
+        run: go tool cover -func=coverage.out

@@ -23,8 +23,8 @@ public API stability, correctness, documentation and tests matter more than feat
 | `pkg/kmeans/calculate_error.go` | `CalculateSSE`, `CalculateMSE` |
 | `pkg/kmeans/validator.go` | `ValidatePoints` + sentinel `Err*` variables |
 | `pkg/kmeans/math_utils.go` | `distanceSquared`, `mean`, `findMin`, `findMax` (unexported helpers) |
-| `.golangci.yaml` | golangci-lint config (**v1 format**, CI uses golangci-lint v1.64.8) |
-| `.github/workflows/kmeans-sci.yaml` | CI: `go mod tidy`, golangci-lint, `go test -v ./pkg/kmeans` |
+| `.golangci.yaml` | golangci-lint config (**v2 format**, CI pins golangci-lint v2.14.0) |
+| `.github/workflows/kmeans-sci.yaml` | CI: `lint` job (`go mod verify`, `go mod tidy -diff`, golangci-lint) and `tests` job (`go test -race -coverprofile ./...`) |
 | `REVIEW.md` | Code review report with known bugs, missing tests and roadmap |
 
 ## Algorithm flow
@@ -45,7 +45,8 @@ go build ./...
 go vet ./...
 go test ./...
 go test -race -coverprofile=coverage.out ./... && go tool cover -func=coverage.out
-golangci-lint run ./...   # requires golangci-lint v1.x (config is v1 format; v2 fails to load it)
+go mod tidy -diff         # must be clean, CI fails otherwise
+golangci-lint run ./...   # requires golangci-lint v2.x; also lints *_test.go
 ```
 
 ## Testing conventions
@@ -54,13 +55,13 @@ golangci-lint run ./...   # requires golangci-lint v1.x (config is v1 format; v2
   `kmeans` (`math_utils_test.go`, `kmeans_test.go`).
 - testify suites: the entry point **must** be named `TestXxx(t *testing.T)` and call `suite.Run`.
   Suite methods must have **no parameters** (`func (s *XSuite) TestSomething()`), otherwise testify panics.
-  > Currently `NewCalculateErrorSuite`, `NewInitializersSuite`, `NewNormalizersSuite`, `NewKmeansSuite` are
-  > *not* run by `go test` and some of their tests are wrong — see `REVIEW.md`.
+  Every suite in this repo follows that rule (`TestKmeansSuite`, `TestCalculateErrorSuite`, …); a function named
+  `NewXxxSuite` is silently skipped by `go test`.
 - Unexported helpers use table-driven tests with `t.Run`.
 - Compare floats with `InDelta(..., 1e-9)`, never `Equal`, unless values are exactly representable.
 - Random initializers: assert properties (length, membership in dataset), not exact values; use a deterministic
   custom `InitializeCentroidsFunction` when testing `KMeans` outcomes.
-- After changing tests, run `go test -v ./...` and check that the new tests actually appear in the output and
+- Current coverage is 100%; keep it there. After changing tests, run `go test -v ./...` and check that the new tests actually appear in the output and
   that coverage went up.
 
 ## Known pitfalls (do not rely on / be careful when changing)

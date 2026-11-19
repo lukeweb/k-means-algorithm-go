@@ -90,8 +90,8 @@ func handleEmptyCentroid(
 	points []Point,
 ) {
 	var (
-		furthestPointIdx int     = -1
-		maxDist          float64 = -1.0
+		furthestPointIdx = -1
+		maxDist          = -1.0
 	)
 
 	for idx, point := range points {

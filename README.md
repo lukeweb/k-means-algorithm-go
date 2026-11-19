@@ -157,7 +157,7 @@ See [REVIEW.md](REVIEW.md) for the full code review and improvement roadmap.
 ```
 k-means-algorithm-go/
 ├── .github/workflows/kmeans-sci.yaml  # CI: lint + tests
-├── .golangci.yaml                     # golangci-lint configuration (v1 format)
+├── .golangci.yaml                     # golangci-lint configuration (v2 format)
 ├── pkg/
 │   └── kmeans/
 │       ├── kmeans.go            # KMeans, closest-centroid search, empty-cluster handling
@@ -181,11 +181,12 @@ go test ./...
 go test -race -coverprofile=coverage.out ./...
 go tool cover -func=coverage.out
 
-# lint (config is in golangci-lint v1 format; CI uses v1.64.8)
+# lint (config is in golangci-lint v2 format; CI uses v2.14.0)
 golangci-lint run ./...
 ```
 
-CI (`.github/workflows/kmeans-sci.yaml`) runs golangci-lint and the tests on every push and pull request to `main`.
+CI (`.github/workflows/kmeans-sci.yaml`) checks `go mod tidy`, runs golangci-lint and runs the tests with the race
+detector on every push and pull request to `main`.
 
 ## License
 
